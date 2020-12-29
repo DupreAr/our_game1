@@ -1,7 +1,8 @@
+# Артем был здесь
 import pygame
 from PIL import Image
 
-sprite_group_weapons = pygame.sprite.Group()
+sprite_group_weapons = ()
 tank = pygame.sprite.Sprite(sprite_group_weapons)
 rocket = pygame.sprite.Sprite(sprite_group_weapons)
 pvo = pygame.sprite.Sprite(sprite_group_weapons)
@@ -82,7 +83,7 @@ class Weapon(pygame.weapon.Sprite):
         num_lines = 5
         # Заголовок
         screen.blit(text, (
-        self.to_center_text_in_horizontal(text_w, self.location[0], self.location[0] + size_of_table_x), self.location[1] + 30 + int((1/3) * size_of_table_y)))
+        _center_text_in_horizontal(text_w, self.location[0], self.location[0] + size_of_table_x), self.location[1] + 30 + int((1/3) * size_of_table_y)))
         line_now = 0
         # Запись построчно сначала имени характеристики, а потом ее значения
         for i in range(self.location[1] + 60 + int((1/3) * size_of_table_y), self.location[1] + int((1/3) * size_of_table_y) + (num_lines + 2) * 30, 30):
@@ -94,21 +95,21 @@ class Weapon(pygame.weapon.Sprite):
             # Кнопка улучшить, ее центровка и рисование
         text = font.render('Улучшить', True, font_color)
         text_w, text_h = text.get_rect()[2:]
-        coords_left_top_button_upgrade = (self.to_center_text_in_horizontal(text_w + 20, self.location[0], self.location[0] + size_of_table_x // 2), self.location[1] + (line_now + 2) * 25 + 30 + int((1 / 3) * size_of_table_y), text_w + 20, text_h + 10)
+        coords_left_top_button_upgrade = (_center_text_in_horizontal(text_w + 20, self.location[0], self.location[0] + size_of_table_x // 2), self.location[1] + (line_now + 2) * 25 + 30 + int((1 / 3) * size_of_table_y), text_w + 20, text_h + 10)
         screen.fill(pygame.Color('blue'), pygame.Rect(coords_left_top_button_upgrade[0], coords_left_top_button_upgrade[1], text_w + 20, text_h + 10))
         screen.blit(text, (
-            self.to_center_text_in_horizontal(text_w, self.location[0], self.location[0] + size_of_table_x // 2),
+            _center_text_in_horizontal(text_w, self.location[0], self.location[0] + size_of_table_x // 2),
             self.location[1] + (line_now + 2) * 30 + int((1 / 3) * size_of_table_y)))
         # Кнопка удалить
         text = font.render('Удалить', True, font_color)
         text_w, text_h = text.get_rect()[2:]
-        coords_left_top_button_delete = (self.to_center_text_in_horizontal(text_w + 20, self.location[0] + size_of_table_x // 2, self.location[0] + size_of_table_x),
+        coords_left_top_button_delete = (_center_text_in_horizontal(text_w + 20, self.location[0] + size_of_table_x // 2, self.location[0] + size_of_table_x),
             self.location[1] + (line_now + 2) * 25 + 30 + int((1 / 3) * size_of_table_y), text_w + 20, text_h + 10)
         screen.fill(pygame.Color('blue'), pygame.Rect(
             coords_left_top_button_delete[0],
             coords_left_top_button_delete[1], text_w + 20, text_h + 10))
         screen.blit(text, (
-            self.to_center_text_in_horizontal(text_w, self.location[0] + size_of_table_x // 2, self.location[0] + size_of_table_x),
+            _center_text_in_horizontal(text_w, self.location[0] + size_of_table_x // 2, self.location[0] + size_of_table_x),
             self.location[1] + (line_now + 2) * 30 + int((1 / 3) * size_of_table_y)))
         # Флип экрана для рисования
         pygame.display.flip()
@@ -125,7 +126,7 @@ class Weapon(pygame.weapon.Sprite):
                         # Улучшение
                         print('upgrade')
                         self.upgrade()
-                        self.show_stats(False)
+                        _stats(False)
                         pygame.display.flip()
                     elif coords[0] in range(coords_left_top_button_delete[0], coords_left_top_button_delete[0] + text_w + 20) and coords[1] in range(coords_left_top_button_delete[1], coords_left_top_button_delete[1] + text_h + 10):
                         #
@@ -144,7 +145,7 @@ screen.fill('black')
 tank1 = Weapon('tank', screen, (100, 100))
 running = True
 while running:
-    tank1.show_stats(True)
+    _stats(True)
     if tank1.deleted:
         print('deleted')
     if Weapon.quit:
