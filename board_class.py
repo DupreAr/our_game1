@@ -16,6 +16,9 @@ class Board:
         self.left = 0
         self.top = 0
         self.cell_size = 30
+        self.attack = 0
+        self.building = 0
+        self.attack_tank = []
 
         # создадим группу, содержащую все спрайты
         self.all_sprites = pg.sprite.Group()
@@ -32,16 +35,19 @@ class Board:
                                                             i * self.cell_size + self.left,
                                                             self.cell_size, self.cell_size), 1)
                 elif self.board[i][j] == 1:
-                    # создадим спрайт
-                    self.tank_sprite = pg.sprite.Sprite()
-                    # определим его вид
-                    self.tank_sprite.image = load_image("Tank_[Lvl.1].png", -1)
-                    # и размеры
-                    self.tank_sprite.rect = self.tank_sprite.image.get_rect()
-                    # добавим спрайт в группу
-                    self.all_sprites.add(self.tank_sprite)
-                    self.tank_sprite.rect.x = j * self.cell_size + self.left
-                    self.tank_sprite.rect.y = i * self.cell_size + self.left
+                    pg.draw.rect(self.sc, (0, 0, 0), (j * self.cell_size + self.left,
+                                                   i * self.cell_size + self.left,
+                                                   self.cell_size, self.cell_size))
+                    pg.draw.rect(self.sc, (255, 255, 255), (j * self.cell_size + self.left,
+                                                            i * self.cell_size + self.left,
+                                                            self.cell_size, self.cell_size), 1)
+                elif self.board[i][j] == 2:
+                    pg.draw.rect(self.sc, (255, 0, 0), (j * self.cell_size + self.left,
+                                                   i * self.cell_size + self.left,
+                                                   self.cell_size, self.cell_size))
+                    pg.draw.rect(self.sc, (255, 255, 255), (j * self.cell_size + self.left,
+                                                            i * self.cell_size + self.left,
+                                                            self.cell_size, self.cell_size), 1)
 
     # настройка внешнего вида
     def set_view(self, left, top, cell_size):
@@ -72,8 +78,22 @@ class Board:
         return None
 
     def on_click(self, cell):
-        if self.board[cell[0]][cell[1]] == 0:
-            self.board[cell[0]][cell[1]] = 1
+        if self.board[cell[1]][cell[0]] == 0 and self.building == 1:
+            self.board[cell[1]][cell[0]] = 1
+            self.attack = 0
+        elif self.board[cell[1]][cell[0]] == 1 and self.attack == 1:
+            self.board[cell[1]][cell[0]] = 0
+            self.attack = 0
+        elif self.board[cell[1]][cell[0]] == 1 and self.attack == 0:
+            self.board[cell[1]][cell[0]] = 2
+            self.attack_tank = [cell[0], cell[1]]
+            self.attack = 1
+
+    def build(self):
+        if self.building == 1:
+            self.building = 0
+        else:
+            self.building = 1
 
 
 def load_image(name, colorkey=None):
@@ -110,7 +130,10 @@ if __name__ == '__main__':
             if event.type == pg.QUIT:
                 running = False
             if event.type == pg.MOUSEBUTTONUP:
-                board.get_click(event.pos)
+                if event.button == 1:
+                    board.get_click(event.pos)
+                elif event.button == 3:
+                    board.build()
 
         # формирование кадра
         screen.fill((0, 0, 0))
